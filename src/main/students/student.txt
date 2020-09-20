@@ -1,6 +1,6 @@
-Student ID:  [__________]
-Family Name: [__________]
-First Name:  [__________]
+Student ID:  [1235678]
+Family Name: [Testfamilie]
+First Name:  [TestName]
 
 INSTRUCTIONS:
 

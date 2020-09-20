@@ -12,18 +12,22 @@ my $src_folder = "";
 my $src_file_test = "";
 my $des_folder = "";
 my $des_file_test = "";
+my $src_student_folder = "";
 my $src_student = "";
 my $des_student_result = "";
 ###### END INIT Variable #########
 
 ####### USER MODIFY Variable ############
 # $mode = "generate";
-$mode = "testcheck";
+# $mode = "testcheckOne";
+# $mode = "testcheckArgument";
+ $mode = "testcheckAll";
 
 $src_folder = "../data";
 $src_file_test = "data.txt";
 $des_folder = "../data";
 $des_file_test = "data.txt";
+$src_student_folder = "../students";
 $src_student = "student.txt";
 $des_student_result = "result_test.txt";
 ####### USER MODIFY Variable ############
@@ -172,8 +176,42 @@ END
     }
     # ---------------------   END Write Source Test -------------------------------
 }
-elsif($mode eq "testcheck")
+elsif($mode eq "testcheckOne")
 {
+    checkTest($src_folder."/".$src_file_test, $src_student_folder."/".$src_student, 0);
+}
+elsif($mode eq "testcheckArgument")
+{
+    checkTest($src_folder."/".$src_file_test, $src_student_folder."/".$src_student, 0);
+}
+elsif($mode eq "testcheckAll")
+{
+    print "Start checkAll\n";
+
+    opendir(Dir, $src_student_folder) or die "cannot open directory $indirname";
+    @docs = grep(/\.txt$/,readdir(Dir));
+    foreach $d (@Dir) {
+        $rdir = "$indirname/$d";
+        open(res, $rdir) or die "could not open $rdir";
+        while (<res>) {
+
+        }
+    }
+}
+else
+{
+    # Do Nothing
+    print "END Script without action! No MODE defined!"
+}
+
+sub checkTest {
+    my ($testSource, $studentFile, $all, @bad) = @_;
+    die "Extra args" if @bad;
+
+    print "Source from files: \n";
+    print $testSource."\n";
+    print $studentFile."\n";
+
     # Student-ID:
     my $student_id;
     # Student-Family_Name:
@@ -181,9 +219,11 @@ elsif($mode eq "testcheck")
     # Student-First_Name
     my $student_first_name;
 
-    print "\n######################### Student File ###############################\n\n";
+    if($all) {
+        print "\n######################### Student File ###############################\n\n";
+    }
 
-    my $filename = "$FindBin::Bin/$src_folder/$src_student";
+    my $filename = "$FindBin::Bin/$studentFile";
 
     open(my $fh, '<:encoding(UTF-8)', $filename)
         or die "Could not open file '$filename' $!";
@@ -194,24 +234,32 @@ elsif($mode eq "testcheck")
         # Collect Student DATA
         if (($nextline =~ / ^ \s* Student /x)) # Starts with student (/x for whitespace)
         {
-            print "$nextline\n";
+            if($all){
+                print "$nextline\n";
+            }
             $student_id = $nextline;
         }
         elsif (($nextline =~ / ^ \s* Family /x)) # Starts with Family (/x for whitespace)
         {
-            print "$nextline\n";
+            if($all){
+                print "$nextline\n";
+            }
             $student_family_name = $nextline;
         }
         elsif (($nextline =~ / ^ \s* First /x)) # Starts with First (/x for whitespace)
         {
-            print "$nextline\n";
+            if($all){
+                print "$nextline\n";
+            }
             $student_first_name = $nextline;
         }
 
         # Collect Answers
         if ($nextline =~ / ^ \s* \d+ /x) # Starts with Number (/x for whitespace)
         {
-            print "$nextline\n";
+            if($all){
+                print "$nextline\n";
+            }
             push @src_std_questions,
                 {
                     question => $nextline,
@@ -222,21 +270,27 @@ elsif($mode eq "testcheck")
         # Recognize and rememeber the next answer... (expected character = [X])
         elsif (($nextline =~ / ^ \s* \[X /x) and @src_std_questions) # Starts with "[" (/x for whitespace) but only if questions exists
         {
-            print "$nextline\n";
+            if($all){
+                print "$nextline\n";
+            }
             push $src_std_questions[-1]->{answers}->@*, $nextline;
             $src_std_questions[-1]->{count}++;
         }
         # Recognize and rememeber the next question... (expected character = [x])
         elsif (($nextline =~ / ^ \s* \[x /x) and @src_std_questions) # Starts with "[" (/x for whitespace) but only if questions exists
         {
-            print "$nextline\n";
+            if($all){
+                print "$nextline\n";
+            }
             push $src_std_questions[-1]->{answers}->@*, $nextline;
             $src_std_questions[-1]->{count}++;
         }
         # Recognize and rememeber the next answer... (normal)
         elsif (($nextline =~ / ^ \s* \[ /x) and @src_std_questions) # Starts with "[" (/x for whitespace) but only if questions exists
         {
-            print "$nextline\n";
+            if($all){
+                print "$nextline\n";
+            }
             push $src_std_questions[-1]->{answers}->@*, $nextline;
         }
         else {
@@ -248,8 +302,10 @@ elsif($mode eq "testcheck")
 
 
     # Open Reference-Data ######################################################
-    print "\n######################### Reference File ###############################\n\n";
-    my $ref_filename = "$FindBin::Bin/$src_folder/$src_file_test";
+    if($all) {
+        print "\n######################### Reference File ###############################\n\n";
+    }
+    my $ref_filename = "$FindBin::Bin/$testSource";
 
     open(my $ref_fh, '<:encoding(UTF-8)', $ref_filename)
         or die "Could not open file '$ref_filename' $!";
@@ -261,7 +317,9 @@ elsif($mode eq "testcheck")
         # Recognize and remember the next question...
         if ($nextline =~ / ^ \s* \d+ /x) # Starts with Number (/x for whitespace)
         {
-            print "$nextline\n";
+            if($all){
+                print "$nextline\n";
+            }
             push @src_questions,
                 {
                     question => $nextline,
@@ -272,21 +330,27 @@ elsif($mode eq "testcheck")
         # Recognize and rememeber the next answer... (expected character = [X])
         elsif (($nextline =~ / ^ \s* \[X /x) and @src_questions) # Starts with "[" (/x for whitespace) but only if questions exists
         {
-            print "$nextline\n";
+            if($all){
+                print "$nextline\n";
+            }
             push $src_questions[-1]->{answers}->@*, $nextline;
             $src_questions[-1]->{count}++;
         }
         # Recognize and rememeber the next question... (expected character = [x])
         elsif (($nextline =~ / ^ \s* \[x /x) and @src_questions) # Starts with "[" (/x for whitespace) but only if questions exists
         {
-            print "$nextline\n";
+            if($all){
+                print "$nextline\n";
+            }
             push $src_questions[-1]->{answers}->@*, $nextline;
             $src_questions[-1]->{count}++;
         }
         # Recognize and rememeber the next answer... (normal)
         elsif (($nextline =~ / ^ \s* \[ /x) and @src_questions) # Starts with "[" (/x for whitespace) but only if questions exists
         {
-            print "$nextline\n";
+            if($all){
+                print "$nextline\n";
+            }
             push $src_questions[-1]->{answers}->@*, $nextline;
         }
         else {
@@ -295,7 +359,9 @@ elsif($mode eq "testcheck")
     }
     close $fh;
 
-    print "\n######################### Result Test ###############################\n\n";
+    if($all) {
+        print "\n######################### Result Test ###############################\n\n";
+    }
     if(scalar @src_questions == scalar @src_std_questions) # Count Questions
     {
         my $countQ = scalar @src_questions;
@@ -377,6 +443,13 @@ elsif($mode eq "testcheck")
 
         print "--------------------------------------------------------\n";
 
+        print "File: ".$src_student."\n";
+        print $student_id."\n";
+        # Student-Family_Name:
+        print $student_family_name."\n";
+        # Student-First_Name
+        print $student_first_name."\n";
+
         if($countWrong == 0)
         {
             print "Congratulation, you have no faults!\n";
@@ -397,15 +470,11 @@ elsif($mode eq "testcheck")
 
 
         printf("Final Mark: %.2f", ((($countRight / $countQ) * 5) + 1) );
-        print "\n"
+        print "\n";
+        print "--------------------------------------------------------\n";
     }
     else
     {
         print "The size of Questions are not the same! Please checking the File $src_file_test and $src_student"
     }
-}
-else
-{
-    # Do Nothing
-    print "END Script without action! No MODE defined!"
 }
