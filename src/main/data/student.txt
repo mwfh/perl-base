@@ -43,15 +43,15 @@ ________________________________________________________________________________
 
  2. Perl's three main types of call context (or "amount context") are:
 
-    [ ] One
-    [X] Two
+    [X] One
+    [ ] Two
     [ ] Three
     [ ] Four
 
  3. Perl's three main types of call context (or "amount context") are:
 
-    [ ] X
-    [X] x
+    [X] X
+    [ ] x
     [ ] Xerox
     [ ] Four
 
