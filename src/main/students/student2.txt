@@ -1,0 +1,60 @@
+Student ID:  [1235678]
+Family Name: [Testfamilie]
+First Name:  [TestName]
+
+INSTRUCTIONS:
+
+Fill in your student ID number, and names in the boxes above.
+
+Complete this exam by placing an 'X' in the box
+beside the only correct answer to each question, like so:
+
+    [ ] This is not the correct answer
+    [ ] This is not the correct answer either
+    [ ] This is an incorrect answer
+    [X] This is the correct answer
+    [ ] This is an irrelevant answer
+
+Scoring: Each question is worth 2 points.
+         Final score will be: SUM / 10
+
+Warning: Each question has only one correct answer. Answers to questions
+         for which two or more boxes are marked with an 'X' will be scored as zero.
+
+Total number of questions: 30
+
+
+================================================================================
+                                 START OF EXAM
+================================================================================
+
+________________________________________________________________________________
+
+ 1. The static type of a Perl variable is determined by:
+
+    [ ] The compile-time type declarator of the variable
+    [x] Random chance
+    [ ] The type of the first value placed in the variable
+    [ ] The name of the variable
+    [ ] Nothing: Perl variables don't have a static type
+
+
+________________________________________________________________________________
+
+ 2. Perl's three main types of call context (or "amount context") are:
+
+    [ ] One
+    [X] Two
+    [ ] Three
+    [ ] Four
+
+ 3. Perl's three main types of call context (or "amount context") are:
+
+    [X] X
+    [ ] x
+    [ ] Xerox
+    [ ] Four
+
+================================================================================
+                                  END OF EXAM
+================================================================================

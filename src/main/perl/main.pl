@@ -473,8 +473,8 @@ sub checkTest {
         # Student-First_Name
         print $student_first_name."\n\n";
 
-        print "Score Points: \t".$countRight."\n";
-        print "Total Points: \t".$countQ."\n\n";
+        print "Your score: \t".$countRight."\n";
+        print "Total score: \t".$countQ."\n\n";
 
         if($countWrong == 0)
         {
