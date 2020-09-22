@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-use v5.32;
+#use v5.32;
 use strict;
 use warnings;
 use diagnostics;
@@ -182,21 +182,34 @@ elsif($mode eq "testcheckOne")
 }
 elsif($mode eq "testcheckArgument")
 {
-    checkTest($src_folder."/".$src_file_test, $src_student_folder."/".$src_student, 0);
+    print "Check Argument\n";
+
+    my ($src_file_test_orig, @students_files) = @ARGV or die("No exam template file specified.");
+
+    print "Preparing files...\n";
+    print @students_files;
+    print "\n";
+    my %std_files = ();
+    for my $descriptor (@students_files) {
+        for my $file (glob($descriptor)) {
+            print "in my $file\n";
+            checkTest($src_file_test_orig, $file, 0);
+        }
+    }
+
 }
 elsif($mode eq "testcheckAll")
 {
     print "Start checkAll\n";
-
-    opendir(Dir, $src_student_folder) or die "cannot open directory $indirname";
-    @docs = grep(/\.txt$/,readdir(Dir));
-    foreach $d (@Dir) {
-        $rdir = "$indirname/$d";
-        open(res, $rdir) or die "could not open $rdir";
-        while (<res>) {
-
+    opendir(Dir, $src_student_folder) or die "cannot open directory $src_student_folder";
+    my @docs = grep(/\.txt$/,readdir(Dir));
+    foreach my $d (@docs) {
+        for my $file (glob($d)) {
+            print "in my $file";
+            checkTest($src_folder."/".$src_file_test, $src_student_folder."/".$file, 0);
         }
     }
+
 }
 else
 {
@@ -428,6 +441,8 @@ sub checkTest {
                             # print "Anwer Wrong (CountWrong): ".$countWrong."\n";
                         }
                         $answerRight = 0;
+                        $youranswer = "";
+                        $rightanswer = "";
                     }
                     else
                     {
@@ -468,13 +483,22 @@ sub checkTest {
             print "Maybe next time!\n";
         }
 
+        print $countRight."\n";
+        print $countQ."\n";
 
         printf("Final Mark: %.2f", ((($countRight / $countQ) * 5) + 1) );
         print "\n";
+        print "#########################################################\n";
         print "--------------------------------------------------------\n";
+
+        # Reset Values
+        $countWrong = 0;
+        $countRight = 0;
+        $countQ = 0;
     }
     else
     {
         print "The size of Questions are not the same! Please checking the File $src_file_test and $src_student"
     }
+
 }
