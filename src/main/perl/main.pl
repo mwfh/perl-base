@@ -15,6 +15,7 @@ my $des_file_test = "";
 my $src_student_folder = "";
 my $src_student = "";
 my $des_student_result = "";
+my $all_result = 0;
 ###### END INIT Variable #########
 
 ####### USER MODIFY Variable ############
@@ -30,6 +31,7 @@ $des_file_test = "data.txt";
 $src_student_folder = "../students";
 $src_student = "student.txt";
 $des_student_result = "result_test.txt";
+$all_result = 0;
 ####### USER MODIFY Variable ############
 
 # Array for collect Data
@@ -178,7 +180,7 @@ END
 }
 elsif($mode eq "testcheckOne")
 {
-    checkTest($src_folder."/".$src_file_test, $src_student_folder."/".$src_student, 0);
+    checkTest($src_folder."/".$src_file_test, $src_student_folder."/".$src_student, $all_result);
 }
 elsif($mode eq "testcheckArgument")
 {
@@ -193,7 +195,7 @@ elsif($mode eq "testcheckArgument")
     for my $descriptor (@students_files) {
         for my $file (glob($descriptor)) {
             print "in my $file\n";
-            checkTest($src_file_test_orig, $file, 0);
+            checkTest($src_file_test_orig, $file, $all_result);
         }
     }
 
@@ -205,8 +207,8 @@ elsif($mode eq "testcheckAll")
     my @docs = grep(/\.txt$/,readdir(Dir));
     foreach my $d (@docs) {
         for my $file (glob($d)) {
-            print "in my $file";
-            checkTest($src_folder."/".$src_file_test, $src_student_folder."/".$file, 0);
+            # Run Sub with all Files ( Source Test, Student Test, [0=false, 1=true] all Result)
+            checkTest($src_folder."/".$src_file_test, $src_student_folder."/".$file, $all_result);
         }
     }
 
@@ -224,6 +226,9 @@ sub checkTest {
     print "Source from files: \n";
     print $testSource."\n";
     print $studentFile."\n";
+
+    @src_questions = ();
+    @src_std_questions = ();
 
     # Student-ID:
     my $student_id;
@@ -381,14 +386,16 @@ sub checkTest {
         my $countRight = 0;
         my $countWrong = 0;
         my $answerRight = 0;
-        my @answer_STDSRC;
+        my @answer_STDSRC = ();
         my $answerText = "";
 
         my $youranswer = "";
         my $rightanswer = "";
 
-        foreach my $src_questions (@src_questions) {
-            foreach my $src_std_questions (@src_std_questions) {
+        foreach my $src_questions (@src_questions)
+        {
+            foreach my $src_std_questions (@src_std_questions)
+            {
 
                 if($src_questions->{question} eq $src_std_questions->{question}) # Compair Question-Text
                 {
@@ -400,10 +407,15 @@ sub checkTest {
                             {
                                 push @answer_STDSRC, $src_std_answer;
                             }
-                            if ($src_std_answer =~ / ^ \s* \[x /x)
+                            elsif ($src_std_answer =~ / ^ \s* \[x /x)
                             {
                                 push @answer_STDSRC, $src_std_answer;
                             }
+                            else
+                            {
+                                # Do Nothing
+                            }
+
                         }
 
                         while(scalar(@answer_STDSRC) !=0) # Check Answer on Student Solution
@@ -440,20 +452,16 @@ sub checkTest {
                             $countWrong++;
                             # print "Anwer Wrong (CountWrong): ".$countWrong."\n";
                         }
-                        $answerRight = 0;
-                        $youranswer = "";
-                        $rightanswer = "";
+
                     }
                     else
                     {
                         $countWrong++;
                         # print "Anwer Wrong: ".$countWrong."\n";
                     }
-
                 }
 
             }
-
         }
 
         print "--------------------------------------------------------\n";
@@ -463,7 +471,10 @@ sub checkTest {
         # Student-Family_Name:
         print $student_family_name."\n";
         # Student-First_Name
-        print $student_first_name."\n";
+        print $student_first_name."\n\n";
+
+        print "Score Points: \t".$countRight."\n";
+        print "Total Points: \t".$countQ."\n\n";
 
         if($countWrong == 0)
         {
@@ -483,11 +494,8 @@ sub checkTest {
             print "Maybe next time!\n";
         }
 
-        print $countRight."\n";
-        print $countQ."\n";
-
         printf("Final Mark: %.2f", ((($countRight / $countQ) * 5) + 1) );
-        print "\n";
+        print "\n\n";
         print "#########################################################\n";
         print "--------------------------------------------------------\n";
 

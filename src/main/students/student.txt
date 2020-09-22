@@ -32,8 +32,8 @@ ________________________________________________________________________________
 
  1. The static type of a Perl variable is determined by:
 
-    [X] The compile-time type declarator of the variable
-    [ ] Random chance
+    [ ] The compile-time type declarator of the variable
+    [x] Random chance
     [ ] The type of the first value placed in the variable
     [ ] The name of the variable
     [ ] Nothing: Perl variables don't have a static type
