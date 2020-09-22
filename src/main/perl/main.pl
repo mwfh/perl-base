@@ -14,25 +14,41 @@ my $des_folder = "";
 my $des_file_test = "";
 my $src_student_folder = "";
 my $src_student = "";
-my $des_student_result = "";
 my $all_result = 0;
 ###### END INIT Variable #########
 
-####### USER MODIFY Variable ############
-# $mode = "generate";
-# $mode = "testcheckOne";
-# $mode = "testcheckArgument";
- $mode = "testcheckAll";
+#==========================================================================#
+####### USER MODIFY Variable ###############################################
 
+#------ Choose your preferred mode ----------
+# $mode = "generate";           # Generate a new Test from original File
+# $mode = "testcheckOne";       # Check one Test-File: "$src_student"
+# $mode = "testcheckArgument";  # Check Test with cli parameters: $ perl main.pl ../data/data.txt  ../students/*.txt
+ $mode = "testcheckAll";        # Check all Tests from defined Directory: $src_student_folder
+#------ END Choose your preferred mode ------
+
+#------ Choose your original test file ------
 $src_folder = "../data";
 $src_file_test = "data.txt";
+#------ Choose your original test file ------
+
+#------ Choose your generated test file -----
 $des_folder = "../data";
 $des_file_test = "data.txt";
-$src_student_folder = "../students";
-$src_student = "student.txt";
-$des_student_result = "result_test.txt";
-$all_result = 0;
-####### USER MODIFY Variable ############
+#------ Choose your generated test file -----
+
+#------ Choose the students test file -----
+$src_student_folder = "../students";    # For all test check modes
+$src_student = "student.txt";           # Only for Mode: "testcheckOne"!!!!
+#------ Choose the students test file -----
+
+#------ Choose your check Output ---------
+$all_result = 0; # 0 = false, 1 = true
+# Output from Student File and original test file
+#------ Choose your check Output ---------
+
+####### USER MODIFY Variable ###############################################
+#==========================================================================#
 
 # Array for collect Data
 my @src_questions;
@@ -40,6 +56,10 @@ my @src_std_questions;
 
 if($mode eq "generate")
 {
+    print "================================================================================\n";
+    print "Start generate test...\n";
+    print "================================================================================\n";
+
     # ---------------------   Read Source Test -------------------------------
     # Example: my $filename = "../data/data.txt";
     my $filename = "$FindBin::Bin/$src_folder/$src_file_test";
@@ -92,15 +112,14 @@ if($mode eq "generate")
 
     close $fh;
 
-    print "------------------------------------------------------\n";
-    print "------------------ RANDOM SORT Answer ----------------\n";
+    print "--------------------------------------------------------------\n";
+    print "------------------ Output check without cross ----------------\n";
 
     # Testing Randomise
     if (@src_questions) {
         foreach my $question (@src_questions) {
             print $question->{question};
             print "\n";
-            my $index = 0;
             foreach my $key (sort {rand cmp 0.5} $question->{answers}->@*) {
                 print $key . "\n";
             }
@@ -148,8 +167,7 @@ Total number of questions: 30
 ================================================================================
 END
 
-        # open($fh, '>>', "$des_folder\/$date-$des_file_test") or die $!;
-
+        # Prepare File to write
         my $out_filename = "$FindBin::Bin/$des_folder/$date-$des_file_test";
         open(my $fh, '>', $out_filename)
             or die "Could not open file '$out_filename' $!";
@@ -174,12 +192,18 @@ END
 
         # File close
         close $fh;
-
+        print "\n";
+        print "Random File: $out_filename\n";
+        print "finished!\n\n";
+        print "================================================================================\n";
     }
     # ---------------------   END Write Source Test -------------------------------
 }
 elsif($mode eq "testcheckOne")
 {
+    print "================================================================================\n";
+    print "Start check one file...\n";
+    print "================================================================================\n";
     checkTest($src_folder."/".$src_file_test, $src_student_folder."/".$src_student, $all_result);
 }
 elsif($mode eq "testcheckArgument")
@@ -188,10 +212,11 @@ elsif($mode eq "testcheckArgument")
 
     my ($src_file_test_orig, @students_files) = @ARGV or die("No exam template file specified.");
 
-    print "Preparing files...\n";
+    print "================================================================================\n";
+    print "Start check with arguments...\n";
+    print "================================================================================\n";
     print @students_files;
     print "\n";
-    my %std_files = ();
     for my $descriptor (@students_files) {
         for my $file (glob($descriptor)) {
             print "in my $file\n";
@@ -202,7 +227,9 @@ elsif($mode eq "testcheckArgument")
 }
 elsif($mode eq "testcheckAll")
 {
-    print "Start checkAll\n";
+    print "================================================================================\n";
+    print "Start check, all file from defined folder...\n";
+    print "================================================================================\n";
     opendir(Dir, $src_student_folder) or die "cannot open directory $src_student_folder";
     my @docs = grep(/\.txt$/,readdir(Dir));
     foreach my $d (@docs) {
@@ -238,6 +265,7 @@ sub checkTest {
     my $student_first_name;
 
     if($all) {
+        print "================================================================================\n";
         print "\n######################### Student File ###############################\n\n";
     }
 
@@ -496,8 +524,9 @@ sub checkTest {
 
         printf("Final Mark: %.2f", ((($countRight / $countQ) * 5) + 1) );
         print "\n\n";
-        print "#########################################################\n";
-        print "--------------------------------------------------------\n";
+
+        print "================================================================================\n";
+        print "================================================================================\n\n";
 
         # Reset Values
         $countWrong = 0;
