@@ -456,6 +456,7 @@ sub checkTest {
                         if($answerRight > 0)
                         {
                             $countRight++; # Set Answer from Student as right
+                            $countRight++; # Set Answer from Student as right
                             # print "Anwer Right (CountRight): ".$countRight."\n";
                         }
                         else
@@ -546,27 +547,28 @@ sub checkTest {
         print $student_first_name."\n\n";
 
         print "Your score: \t".$countRight."\n";
-        print "Total score: \t".$countQ."\n\n";
+        #print "Total score: \t".$countQ."\n\n";
 
-        if($countWrong == 0)
-        {
-            print "Congratulation, you have no faults!\n";
-        }
+        # if($countWrong == 0)
+        # {
+        #     print "Congratulation, you have no faults!\n";
+        # }
+        #
+        # if(((($countRight / $countQ) * 5) + 1) >= 5)
+        # {
+        #     print "Great Job!\n";
+        # }
+        # elsif(((($countRight / $countQ) * 5) + 1) >= 3.75)
+        # {
+        #     print "You passed!\n";
+        # }
+        # elsif(((($countRight / $countQ) * 5) + 1) < 3.75)
+        # {
+        #     print "Maybe next time!\n";
+        # }
 
-        if(((($countRight / $countQ) * 5) + 1) >= 5)
-        {
-            print "Great Job!\n";
-        }
-        elsif(((($countRight / $countQ) * 5) + 1) >= 3.75)
-        {
-            print "You passed!\n";
-        }
-        elsif(((($countRight / $countQ) * 5) + 1) < 3.75)
-        {
-            print "Maybe next time!\n";
-        }
-
-        printf("Final Mark: %.2f", ((($countRight / $countQ) * 5) + 1) );
+        #printf("Final Mark: %.2f", ((($countRight / $countQ) * 5) + 1) );
+        printf("Final Mark: %.2f", ($countRight / 10));
         print "\n\n";
 
         print "================================================================================\n";
