@@ -24,7 +24,7 @@ my $all_result = 0;
 # $mode = "generate";           # Generate a new Test from original File
 # $mode = "testcheckOne";       # Check one Test-File: "$src_student"
 # $mode = "testcheckArgument";  # Check Test with cli parameters: $ perl main.pl ../data/data.txt  ../students/*.txt
- $mode = "testcheckAll";        # Check all Tests from defined Directory: $src_student_folder
+ $mode = "testcheckAll";        # Check all Tests from defined Directory: $src_student_folder and source $src_file_test
 #------ END Choose your preferred mode ------
 
 #------ Choose your original test file ------
@@ -57,7 +57,7 @@ my @src_std_questions;
 if($mode eq "generate")
 {
     print "================================================================================\n";
-    print "Start generate test...\n";
+    print "Start generate test from source: $src_folder/$src_file_test\n";
     print "================================================================================\n";
 
     # ---------------------   Read Source Test -------------------------------
@@ -113,20 +113,7 @@ if($mode eq "generate")
     close $fh;
 
     print "--------------------------------------------------------------\n";
-    print "------------------ Output check without cross ----------------\n";
 
-    # Testing Randomise
-    if (@src_questions) {
-        foreach my $question (@src_questions) {
-            print $question->{question};
-            print "\n";
-            foreach my $key (sort {rand cmp 0.5} $question->{answers}->@*) {
-                print $key . "\n";
-            }
-        }
-    }
-
-    print "------------------------------------------------------\n";
 
     # ---------------------  END Read Source Test -------------------------------
 
@@ -134,7 +121,6 @@ if($mode eq "generate")
     if (@src_questions and $des_file_test) {
         # 20170904-132602-Outputfilename.txt
         my $date = strftime "%Y%m%d-%H%M%S", localtime;
-        print $date;
 
         my $HEADER = <<END;
 Student ID:  [__________]
@@ -193,7 +179,7 @@ END
         # File close
         close $fh;
         print "\n";
-        print "Random File: $out_filename\n";
+        print "Random test generated to file:\n $out_filename\n\n";
         print "finished!\n\n";
         print "================================================================================\n";
     }
