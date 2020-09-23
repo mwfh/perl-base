@@ -474,7 +474,8 @@ sub checkTest {
                         }
                         else
                         {
-                            print "Answer was wrong for the Question: $src_questions->{question} \n";
+                            print "--------------------------------------------------------\n";
+                            print "Answer was wrong for the Question: \n$src_questions->{question} \n";
                             print "Your answer was: \t $youranswer\n";
                             print "Right answer was: \t $rightanswer\n";
                             $countWrong++;
@@ -486,6 +487,63 @@ sub checkTest {
                     {
                         $countWrong++;
                         # print "Anwer Wrong: ".$countWrong."\n";
+                        $youranswer = "";
+                        $rightanswer = "";
+
+                        foreach my $src_std_answer ($src_std_questions->{answers}->@*) # Search for right Answer form Source
+                        {
+                            if ($src_std_answer =~ / ^ \s* \[X /x)
+                            {
+                                push @answer_STDSRC, $src_std_answer;
+                            }
+                            elsif ($src_std_answer =~ / ^ \s* \[x /x)
+                            {
+                                push @answer_STDSRC, $src_std_answer;
+                            }
+                            else
+                            {
+                                # Do Nothing
+                            }
+                        }
+
+                        while(scalar(@answer_STDSRC) !=0) # Check Answer on Student Solution
+                        {
+                            $answerText=shift(@answer_STDSRC);
+                            if(($answerText =~ / ^ \s* \[X /x) || ($answerText =~ / ^ \s* \[x /x)) {
+                                $youranswer .= $answerText . "\n";
+                            }
+                        }
+
+                        if($youranswer eq "")
+                        {
+                            $youranswer = "No answer available!"
+                        }
+
+                        foreach my $src_answer ($src_questions->{answers}->@*)
+                        {
+                            if ($src_answer =~ / ^ \s* \[X /x) {
+                                $rightanswer = $src_answer;
+                            }
+                        }
+
+                        print "--------------------------------------------------------\n";
+                        if($src_questions->{count} < $src_std_questions->{count})
+                        {
+                            print "To many answers for this Question: \n$src_questions->{question} \n\n";
+                            print "Your answer was: \n$youranswer\n";
+                            print "Right answer was: \t $rightanswer\n";
+                        }
+                        else
+                        {
+                            print "Too few answers for this question: \n$src_questions->{question} \n\n";
+                            print "Your answer was: \t $youranswer\n\n";
+                            print "Right answer was: \t $rightanswer\n";
+                        }
+
+
+
+                        $youranswer = "";
+                        $rightanswer = "";
                     }
                 }
 
@@ -526,6 +584,7 @@ sub checkTest {
         print "\n\n";
 
         print "================================================================================\n";
+        print "END check for File: $studentFile\n";
         print "================================================================================\n\n";
 
         # Reset Values
